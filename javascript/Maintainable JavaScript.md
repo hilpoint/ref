@@ -62,7 +62,7 @@ if (isNotNull) {
   - 문서화 주석을 사용할 때에는 모든 메서드, 모든 생성자, 주석을 추가한 메서드를 가진 모든 객체에 대한 설명이 있어야한다.
 ```javascript
 /**
-JAVADOC 문서 포멧으로 많이 씁니다.
+JAVADOC 문서 포멧으로 많이 쓴다.
 
 @param {Object} isNotNull 널인지 확인 true/false
 @return {Object} 문자열 값 
