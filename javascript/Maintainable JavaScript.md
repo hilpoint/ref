@@ -73,3 +73,47 @@ if (isNotNull) {
     return "isNotNull";
 }
 ```
+
+### 3장. 문장과 표현식
+
++ 다소 취향이 갈리지만 선호하는 스타일을 정리(코딩스타일 관점은 서로다르므로)
++ 복합문에서 중괄호는 반드시 사용하자. 오해의 소지를 미연에 방지
++ 복합문 사이에 공백을 넣자
+```javascript
+  if (condition) {
+    console.log("내가 선호하는 패턴");
+  }
+```
++ 스위치문은 break, default 등 미사용시 명확한 주석을 달자
+```javascript
+  // break 관련
+  switch (condition) {
+  
+    // 아무로직없이 다음 case문으로 ..
+    case "first":
+    case "second":
+      // code
+      break;
+    case "third"
+      // code
+      
+      // jsLint에서 break 경고 메세지를 출력안함
+      /*falls throuth*/ 
+    default:
+      // code
+  }
+  
+  // default 관련
+  switch (condition) {
+    case "first":
+      // code
+      break;
+    case "second":
+      // code
+      break;
+    // no default
+  }
+```
++ with 문은 사용하지 말자
++ for in 반복문 사용시 프로토타입 체인을 사용하지 않는다면 hasOwnProperty() 메서드를 반드시 사용하자
+
