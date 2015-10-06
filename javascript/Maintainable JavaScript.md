@@ -193,10 +193,10 @@ if (isNotNull) {
   var y = false;
   
   if (x) {
-    console.long(x);
+    console.log(x);
   }
   
   if (y) {
-    console.long(y);
+    console.log(y);
   }  
 ```
