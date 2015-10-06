@@ -189,7 +189,7 @@ if (isNotNull) {
    *  하지만 변수 y는 값이 false이므로 조건문을 통과 못함.
    *  따라서 기본 래퍼 타입 객체를 명시적으로 사용하면 찾기 어려운 버그가 탄생할 수 있음.
    */
-  var x = new Boolean(true);
+  var x = new Boolean(false);
   var y = false;
   
   if (x) {
