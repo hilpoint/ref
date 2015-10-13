@@ -256,3 +256,42 @@ MainJS.Chapter3 = new MainJS.Book("3 class");
   + Zero-Global 접근법
     - 스크립트가 작고 페이지에 영향을 주지 않을 때 주로 사용
     - 북마클릿을 만들때 가장 많이 쓰인다.
+  
+### 7. 이벤트 처리
+
++ 애플리케이션 로직을 분리하자.
+```javascript
+// 나쁜 예 - 이벤트 핸들러가 애플리케이션 로직을 포함한다.
+function handleClick(event) {
+  var popup = document.getElementById("popup");
+  popup.style.left = event.clientX + "px";
+  popup.style.top = event.clientY + "px";
+  popup.className = "reveal";
+}
+
+// 좋은 예 - 로직 분리
+var MyApp = {
+  handleClick: function(event) {
+    this.showPopup(event);
+  },
+  
+  showPopup: function(event) {
+    var popup = document.getElementById("popup");
+    popup.style.left = event.clientX + "px";
+    popup.style.top = event.clientY + "px";
+    popup.className = "reveal";  
+  }
+};
+
+addListener(element, "click", function(event) {
+  MyApp.handleClick(event);
+}
+
+addListener(element, "click", handleClick);
+
+```
++ 이벤트 객체를 바로 전달하지 말자.
+```javascript
+// 좋은 예
+this.showPopup(event.clientX, event.clientY);
+```
