@@ -208,3 +208,51 @@ if (isNotNull) {
 + css에서 자바스크립트 분리
 + 자바스크립트에서 css 분리
 + 자바스크립트에서 html 분리
+
+### 6. 전역 선언 방지
+
++ 전역변수를 선언 하면 브라우저의 window  객체의 프로퍼티가 된다.
++ 특별한 경우가 아니면 전역 선언을 하지말자(디버깅, 테스트에 어려움)
++ One-Global 접근법(하나의 전역 객체만 사용)
+  - jQuery , YUI 등에서 사용
+```javascript
+/*
+ * 일반적인 객체 생성 코드
+ * 총 4개의 객체가 생성 됨
+ */ 
+function Book(title) {
+  this.title = title;
+  this.page = 1;
+}
+
+Book.prototype.turnPage = function(direction) {
+  this.page += direction;
+};
+
+var Chapter1 = new Book("1 class");
+var Chapter2 = new Book("2 class");
+var Chapter3 = new Book("3 class");
+
+/*
+ * One Global
+ * MainJS 객체 하나만 생성
+ */ 
+var MainJS = {};
+
+MainJS.Book = function(title) {
+  this.title = title;
+  this.page = 1;
+};
+
+MainJS.Book.prototype.turnPage = function(direction) {
+  this.page += direction
+};
+
+MainJS.Chapter1 = new MainJS.Book("1 class");
+MainJS.Chapter2 = new MainJS.Book("2 class");
+MainJS.Chapter3 = new MainJS.Book("3 class");
+```
+
+  + Zero-Global 접근법
+    - 스크립트가 작고 페이지에 영향을 주지 않을 때 주로 사용
+    - 북마클릿을 만들때 가장 많이 쓰인다.
