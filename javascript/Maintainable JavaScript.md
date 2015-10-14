@@ -15,7 +15,7 @@
           
           doSomething();
   }
-  ```
+```
 + 적재적소에 빈줄을 추가하자
   - 메서드 사이
   - 메서드 내 지역 변수와 첫 번째 문장 사이
@@ -48,33 +48,32 @@ set | 값을 저장하기 위해 사용하는 함수
   - 주석을 입력 하기전에 한줄 비우고 시작. 설명할 코드 바로 윗줄에 작성. 코드에 들여쓰기 맞춤
   - 줄 끝에 꼬리 주석은 한단계 들여쓰기 한후 입력. 최대 줄 길이 넘지 안도록.
   - 코드 주석 처리시 사용
-
-```javascript
-// 좋은 예
-if (isNotNull) {
-
-    // 이 문장에 오면 Null이 아님
-    doSomething();
-}
-```
+  ```javascript
+  // 좋은 예
+  if (isNotNull) {
+  
+      // 이 문장에 오면 Null이 아님
+      doSomething();
+  }
+  ```
 + 여러 줄 주석 
   - 한줄 비우고 시작. 설명할 코드 바로 윗줄에 작성. 들여쓰기 맞춤
 + 이해하기 어렵거나 오해하기 쉬운 코드 그리고 특정 브라우저 핵에는 주석설명을 잘 달자.
 + 문서화 주석
   - 문서화 주석을 사용할 때에는 모든 메서드, 모든 생성자, 주석을 추가한 메서드를 가진 모든 객체에 대한 설명이 있어야한다.
-```javascript
-/**
-JAVADOC 문서 포멧으로 많이 쓴다.
-
-@param {Object} isNotNull 널인지 확인 true/false
-@return {Object} 문자열 값 
-**/
-if (isNotNull) {
-
-    // 이 문장에 오면 Null이 아님
-    return "isNotNull";
-}
-```
+  ```javascript
+  /**
+  JAVADOC 문서 포멧으로 많이 쓴다.
+  
+  @param {Object} isNotNull 널인지 확인 true/false
+  @return {Object} 문자열 값 
+  **/
+  if (isNotNull) {
+  
+      // 이 문장에 오면 Null이 아님
+      return "isNotNull";
+  }
+  ```
 
 #### 3장. 문장과 표현식
 
@@ -182,24 +181,24 @@ if (isNotNull) {
 + 기본 래퍼 타입
   - String, Boolean, Number
   - 기본 래퍼 타입 직접 사용하지 말자.
-```javacript
-
-  /*
-   *  둘 다 false를 의미 하지만 변수 x는 객체이므로 첫 번째 조건문에서는 undefined나 null이 아니므로 true로 판단.
-   *  하지만 변수 y는 값이 false이므로 조건문을 통과 못함.
-   *  따라서 기본 래퍼 타입 객체를 명시적으로 사용하면 찾기 어려운 버그가 탄생할 수 있음.
-   */
-  var x = new Boolean(false);
-  var y = false;
+  ```javacript
   
-  if (x) {
-    console.log(x);
-  }
-  
-  if (y) {
-    console.log(y);
-  }  
-```
+    /*
+     *  둘 다 false를 의미 하지만 변수 x는 객체이므로 첫 번째 조건문에서는 undefined나 null이 아니므로 true로 판단.
+     *  하지만 변수 y는 값이 false이므로 조건문을 통과 못함.
+     *  따라서 기본 래퍼 타입 객체를 명시적으로 사용하면 찾기 어려운 버그가 탄생할 수 있음.
+     */
+    var x = new Boolean(false);
+    var y = false;
+    
+    if (x) {
+      console.log(x);
+    }
+    
+    if (y) {
+      console.log(y);
+    }  
+  ```
 
 ## 프로그래밍 프랙티스
 
@@ -295,3 +294,98 @@ addListener(element, "click", handleClick);
 // 좋은 예
 this.showPopup(event.clientX, event.clientY);
 ```
+
+### 8. Null 비교 금지
+
++ 기본 데이터 타입 알아내기
+  - 자바스크립트는 문자열, 숫자, 불린, null, undefiend 5개의 기본 데이터 타입이 있다.
+  - typeof 연산자를 사용해 데이터 타입을 알수있다.(null은 object를 반환하므로 일치 연산자를 사용하자)
+  - typeof variable 문법 사용을 권장.
+  - typeof 연산자는 선언되지 않은 변수에 사용해도 에러가 발생하지 않는다.
++ 객체 참조 타입 알아내기
+  - 기본 데이터 타입(null제외)이 아닌 모든 값은 참조값이며 typeof를 사용하면 object 문자열을 반환한다.(Object, Array, Date, Error 등)
+  - 참조 타입은 instanceof 연산자를 사용하자
+  - 값 instanceof 생성자명
+  ```javascript
+    if (value instanceof Error) {
+      
+      // code
+      throw value;
+    }
+  ```
+  - 모든 객체는 Object를 상속받으므로 어떠한 객체든 instanceof Object를 사용하면 true 값을 반환한다.
+  - 함수는 참조 타입으로 Function 생성자가 존재하며 모든 함수는 Function의 인스턴스 이다.
+  - 함수인지 확인 할때는 typeof 연산자를 사용하자
+  ```javascript
+    function myF() {}
+    
+    // ie8 이하에선 리턴값이 object 문자열로 반환되므로 주의하자
+    console.log(typeof myF === "function");
+  ```
+  - 배열 알아내기 
+    1. 더글라스 크락포드의 덕타이핑(sort() 메서드가 있는 객체는  배열밖에 없는것을 착안)
+      ```javascript
+        function isArray(value) {
+          return typeof value.sort === "function";
+        }
+      ```
+    2. 유리 자이체프 방법(주어진 값에서 네이티브 toString()을 하면 모든 브라우저에서 표준 문자열을 반환)
+      ```javascript
+        function isArray(value) {
+          return Object.prototype.toString.call(value) === "[object Array]";
+        }
+      ```    
+    3. ECMASript5에 공식 추가된 메서드(ie9, 파폭4, 사파리5, 오페라10.5 이상 지원)
+      ```javascript
+        function isArray(value) {
+        
+          // isArray라는 함수가 정의되어 있으면
+          if (typeof Array.isArray === "function") {
+            return Array.isArray(value);
+          } else {
+            return Object.prototype.toString.call(value) === "[object Array]";
+          }
+        }
+      ```        
++ 프로퍼티 알아내기    
+  - 프로퍼티가 존재하는지 확인 할때는 in 연산자를 사용하는 것이 가장 좋다.
+  ```javascript
+    var human = {
+      age : 10,
+      sex : null
+    }
+    
+    // 좋은 예
+    if ("age" in human) {
+      // code
+    }
+    
+    // 나쁜 예: false 값으로 검사
+    if (object["age"]) {
+      // code
+    }    
+    
+    // 좋은 예
+    if ("sex" in object) {
+      // code
+    }    
+    
+    // 나쁜 예 : null 비교
+    if (object["sex"] != null) {
+      // code
+    }
+  ```    
+  - 상속받은 프로퍼티는 제외하고 객체 인스턴스에 프로퍼티가 있는지 검사하려면 hasOwnProperty() 메서드를 사용하자.
+  - ie8 이하 버전의 DOM 객체는 Object를 상속하지 않아 메서드를 사용전에 있는지 확인해야 한다.
+    ```javascript
+      // DOM 객체
+      if (object.hasOwnProperty("sex")) {
+      
+      }
+      
+      // DOM 객체인지 확질 하지 않을때
+      if ("hasOwnProperty" in object && object.hasOwnProperty("sex")) {
+      
+      }      
+    ``` 
+  
