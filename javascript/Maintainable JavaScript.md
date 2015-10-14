@@ -386,7 +386,7 @@ set | 값을 저장하기 위해 사용하는 함수
       
       }
       
-      // DOM 객체인지 확질 하지 않을때
+      // DOM 객체인지 확실 하지 않을때
       if ("hasOwnProperty" in object && object.hasOwnProperty("sex")) {
       
       }      
