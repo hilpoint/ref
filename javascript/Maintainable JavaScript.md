@@ -416,3 +416,63 @@ set | 값을 저장하기 위해 사용하는 함수
     1. JSON 방식(다른 파일에 데이터를 삽입하거나 서버에서 데이터를 가져올 때 유용)
     2. JSONP 구조. JSON 구조를 함수로 감싸 반환하는 방식
     3. 변수에 JSON 객체를 할당하는 방식
+
+### 10. 사용자 에러 던지기
+
++ 에러 던지기
+  ```javascript
+    // Error 객체를 사용해 에러를 던지자.
+    throw new Error("에러 났다!");
+    
+    // ie8 이하 버전에서는 undefined 메시지를 표시..
+    throw { name: "hil" }
+    throw true;
+    throw 1234;
+    throw new Date();
+  ```
++ 에러를 던지면 브라우저에서 정확한 메시지를 볼 수 있고 빠르고 정확한 디버깅이 가능하다.
++ 에러는 언제 던져야 할까?(에러를 막는 것이 아니라 에러가 발생하면 더욱 편하게 디버깅하는데 의의)
+  - 디버깅하기 어려운 에러를 수정하면 거기에 사용자 정의 에러를 추가하자. 문제가 다시 발생하면 해결하는데 도움이 된다.
+  - 코드를 작성할 때, 발생하면 안 된다고 생각하는 일이 발생하면 에러를 던진다.
+  - 모르는 사람이 사용할 코드를 작성할 때는 함수를 잘못 사용할 수 있는 경우를 생각해보고 그 경우에 에러를 던지도록 하자.
++ try catch 문
+  - 에러가 발생할 것으로 예상되는 코드에 try catch 문을 이용하면 브라우저가 에러를 처리하기 전에 에러를 먼저 가저 올수 있다.
++ 에러 타입(ECMA-262에는 총 7가지 타입의 에러를 정의함.)
+  - ***Error***
+    * 모든 에러의 기본 타입. 엔진에서 이 타입의 에러는 발생하지 않는다.
+  - ***EvalError***
+    * eval()에서 실행한 코드에 실행 중 에러가 있으면 이 타입으로 에러가 발생함.
+  - ***RangeError***
+    * 숫자가 범위를 벗어나면 이 타입 에러가 발생함. 예를 들어 -20개의 요소를 가진 배열을 생성하려고 new Array(-20)이라 하면 RangeError이 발생. 정상적으로 실행된다면 거의 발생하지 않는 에러.
+  - ***ReferenceError***
+    * 사용하려는 객체를 사용할  수 없을 때 발생한다. 예를 들어 null을 참조하는 변수에서 메서드를 호출하면 발생한다.
+  - ***SyntaxError***
+    * eval()에 전달한 코드가 문법상 문제가 있으면 발생함.
+  - ***TypeError***
+    * 변수가 알 수 없는 타입일 때 발생함. 예를 들어 new 10 또는 "prop" in true 같은 코드 실행시 발생함.
+  - ***URIError***
+    * 잘못된 형식의 URI 문자열이 encodeURI, encodeURIComponent, decodeURI, decodeURIComponent에 전달되면 발생함.
+  - 사용자 정의 에러 및 정밀한 에러 검사를 하자
+    ```javascript
+      function MyError(message) {
+        this.message = message;
+      }
+      
+      MyError.prototype = new Error();
+      
+      try {
+      
+      } catch (ex) {
+        if (ex instanceof TypeError) {
+          // 기본 에러 처리
+        } else if (ex instanceof ReferenceError) {
+          // 기본 에러 처리
+        } else if (ex instanceof MyError) {
+          // 사용자저의 에러 처리
+          // ie8 이하에서는 에러 메시지가 보이진 않지만 일반적인 에러 메시지인 "Exception thrown but not caught"가 뜬다.
+          // 사용자 정의 에러 객체가 우리가 발생시킨 에러인지 구분할 수 있는 장점이 있다.
+        } else {
+        
+        }
+      }
+    ```
