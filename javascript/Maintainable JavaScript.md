@@ -454,6 +454,7 @@ set | 값을 저장하기 위해 사용하는 함수
     * 잘못된 형식의 URI 문자열이 encodeURI, encodeURIComponent, decodeURI, decodeURIComponent에 전달되면 발생함.
   - 사용자 정의 에러 및 정밀한 에러 검사를 하자
     ```javascript
+      // 11장의 타입기반 상속
       function MyError(message) {
         this.message = message;
       }
@@ -476,3 +477,163 @@ set | 값을 저장하기 위해 사용하는 함수
         }
       }
     ```
+    
+### 11. 객체의 변경 권한
+    
++ 직접 정희 하지 않은 객체는 수정하면 안된다.
+  - 네이티브 객체(Objcet, Array 등등)
+  - DOM 객체 (예: document 객체)
+  - 브라우저 객체 모델(BOM) 객체 (예: window 객체)
+  - 라이브러리 객체
++ 객체 변경 금지 규칙
+  - 메서드를 오버라이드 하지 않는다.
+    ```javascript
+      // 나쁜 예
+      document._originalGetElementById = document.getElementById;
+      document.getElementById = function (id) {
+        if (id == "window") {
+          return window;
+        } else {
+          return document._originalGetElementById(id);
+        }
+      };
+    ```
+  - 새로운 메서드를 추가하지 않는다.
+    ```javascript
+      // 나쁜 예 : DOM 객체에 메서드를 추가한다.
+      document.sayImAwesome = function() {
+        alert("DOM 객체 수정하지 말자.");
+      };
+      
+      // 나쁜 예 : 네이티브 객체에 메서드를 추가한다.
+      document.prototype.reverseSort = function() {
+      
+        // 추후 네이티브 메서드와 이름이 충돌 날 가능성
+        return this.sort().reverse();
+      };
+      
+      // 나쁜 예 : 라이브러리에서 정의한 객체에 메서드를 추가한다.
+      YUI.doSomething = function() {
+        // code
+      };
+    ```
+  - 기존 메서드를 삭제하지 않는다.
+    ```javascript
+      // 나쁜 예 - DOM 메서드 제거
+      // 프로토타입 메서드는 delete 연산자로 제거 못 함.
+      document.getElemetById = null;
+    ```
++ 더 나은 접근법
+  - 객체 기반 상속(프로토타입 상속) 
+    * 객체가 다른 객체의 생성자 함수를 호출하지 않고 그 객체를 상속하는 방법
+      ``` javascript
+        var person = {
+          name: "hil",
+          sayName: function() {
+            alert(this.name);
+          }
+        };
+        
+        var myPerson = Object.create(person);
+        
+        myPerson.sayName(); // hil
+        
+        myPerson.sayName = function() {
+          alert("point");
+        };
+        
+        myPerson.sayName(); // point
+        person.sayName(); // hil
+        
+        var myPerson2 = Object.create(person, {
+            name: {
+              value: "handsome"
+            }
+        });
+        
+        myPerson2.sayName(); // handsome
+      ```
+  - 타입 기반 상속
+    * 상속받으려는 객체의 생성자에 접근하여 상속.
+      ```javascript
+        function Person(name) {
+          this.name;
+        }
+        
+        function Author(name) {
+          Person.call(this, name);
+        }
+        
+        Author.prototype = new Person();
+      ```
+  - 퍼샤드 패턴
+    * 기존 객체에 새로운 인터페이스를 만들 때 사용하는 인기있는 디자인 패턴
+    * 기존 객체를 보이지 않는 곳에 두고 이용하는 완전히 새로운 객체이다.(***Wrapper 래퍼***)
+      ```javascript
+        // DOM 객체 래퍼
+        function DOMWrapper(element) {
+          this.element = element;
+        }
+        
+        DOMWrapper.prototype.addClass = function(className) {
+          element.className += " " +  className;
+        };
+        
+        DOMWrapper.prototype.remove = function() {
+          this.element.parentNode.removeChild(this.element);
+        };
+        
+        // 사용법
+        var wrapper = new DOMWrapper(document.getElementById("m-div");
+        
+        // CSS 클래스 추가
+        wrapper.addClass("selected");
+        
+        // DOM 요소 제거
+        wrapper.remove();
+      ```
++ 객체 변경을 방지하는 방법
+  - ECMAScript5에서 객체 변경을 막을수 있는 메서드가 추가 됨
+  - IE9+, 파폭4+, 사파리5.1+, 오페라12+, 크롬에서 지원
+  - 총 3단계
+    1. 확장방지(Prevent Extention)
+      * 객체에 새로운 프로퍼티나 메서드를 추가할 수는 없지만 삭제와 수정 가능
+        ```javascript
+          var person = {
+            name: "hil"
+          };
+          
+          // 객체 잠금
+          Object.preventExtension(person);
+          
+          console.log(Object.isExtensible(person); // false
+          
+          person.age = 18; // 실제 반영되지 않고 strict 모드가 아니면 에러 없이 넘어감
+        ```
+    2. 봉인(Seal)
+      * 확장 방지 단계와 같지만 프로퍼티와 메서드를 삭제할 수 없다.
+        ```javascript
+          // 객체 잠금
+          Object.seal(person);
+          
+          console.log(Object.isExtensible(person)); // false
+          console.log(Object.isSealed(perseon)); // true
+          
+          delete person.name; // 실제 반영되지 않고 strict 모드가 아니면 에러 없이 넘어감
+          person.age = 18; // 실제 반영되지 않고 strict 모드가 아니면 에러 없이 넘어감
+        ```
+    3. 불변(Freeze)
+      *. 봉인 단계와 같지만 프로퍼티와 메서드를 삭제 못함.
+        ```javascript
+          // 객체 잠금
+          Object.freeze(person);
+          
+          console.log(Object.isExtensible(person)); // false
+          console.log(Object.isSealed(perseon)); // true
+          console.log(Object.isFrozen(person)); // true
+          
+          person.name = "hil"; // 실제 반영되지 않고 strict 모드가 아니면 에러 없이 넘어감
+          person.age = 18; // 실제 반영되지 않고 strict 모드가 아니면 에러 없이 넘어감
+          delete person.name // 실제 반영되지 않고 strict 모드가 아니면 에러 없이 넘어감
+        ```
+        
