@@ -487,6 +487,7 @@ set | 값을 저장하기 위해 사용하는 함수
   - 라이브러리 객체
 + 객체 변경 금지 규칙
   - 메서드를 오버라이드 하지 않는다.
+  
     ```javascript
       // 나쁜 예
       document._originalGetElementById = document.getElementById;
@@ -518,6 +519,7 @@ set | 값을 저장하기 위해 사용하는 함수
       };
     ```
   - 기존 메서드를 삭제하지 않는다.
+  
     ```javascript
       // 나쁜 예 - DOM 메서드 제거
       // 프로토타입 메서드는 delete 연산자로 제거 못 함.
@@ -623,7 +625,7 @@ set | 값을 저장하기 위해 사용하는 함수
           person.age = 18; // 실제 반영되지 않고 strict 모드가 아니면 에러 없이 넘어감
         ```
     3. 불변(Freeze)
-      *. 봉인 단계와 같지만 프로퍼티와 메서드를 삭제 못함.
+      * 봉인 단계와 같지만 프로퍼티와 메서드를 삭제 못함.
         ```javascript
           // 객체 잠금
           Object.freeze(person);
