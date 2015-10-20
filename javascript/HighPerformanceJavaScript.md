@@ -52,7 +52,7 @@
       ```
     - 함수를 실행하는 도중 변수가 등장하면 이 변수와 같은 이름의 식별자를 찾기 위해 실행 문맥의 스코프 체인을 검색하는데 
     이 검색 과정이 성능을 떨어트린다.
-    ![Image of Yaktocat](http://figures.oreilly.com/tagoreillycom20090601oreillybooks300541I_book_d1e1/figs/I_mediaobject7_d1e6895-web.png)
+    ![Image](http://figures.oreilly.com/tagoreillycom20090601oreillybooks300541I_book_d1e1/figs/I_mediaobject7_d1e6895-web.png)
     - 식별자 해석 성능은 함수 안에 있는 지역 변수에 가장 빠르게 접근하고 전역 변수에 접근 하는 것이 일반적으로 가장 느리다.
     - 따라서 함수 바깥쪽의 값을 한번 이상 사용한다면 항상 지역 변수에 저장하여 사용 하는 것이 좋다.
       ```javascript
