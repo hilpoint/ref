@@ -15,4 +15,67 @@
   - XHR 객체로 자바스크립트 코드를 내려받아 페이지에 삽입하자(자바스크립트 파일과 그파일을 요청하는 페이지가 반드시 같은 도메인에 있어야하므로 CDN을 통해서 파일을 받을수 없는 단점)
   - LazyLoad , LABjs 라이브러리 
   
-  
+### 2. 데이터 접근
+
++ 자바스크립트에서 데이터를 저장할 수 있는 장소 4가지
+  - 리터럴 값(문자열, 숫자, 불리언, 객체, 배열, 함수, 정규표현식, null, undefined)
+  - 변수
+  - 배열 항목
+  - 객체 멤버
++ 스코프 관리
+  - 함수는 Function의 인스턴스 이다.
+  - 다른 객체와 마찬가지로 속성이 있는데 접근 가능한 속성과 불가능한 내부속성(***스코프***)으로 나뉜다.
+    ```javascript
+      /*
+       * add() 함수가 생성될때 함수의 스코프 체인에 전역으로 정의된 
+       * 변수 전체를 나타내는 전역 객체가 하나 들어간다.
+       * 이 전역 객체는 window, navigator, document 등에 대한 참조가 들어가 있다.
+       */
+      function add(num1, num2) {
+        var sum = num1 + num2;
+        return sum;
+      }
+      
+      /*
+       * add() 함수를 실행 하면 실행문맥(execution context)이라는 내부 객체가 생성
+       * 실행 문맥음 함수가 실행되는 환경을 정의 한다.
+       * 함수를 실행 할때 마다 별도의 실행 문맥이 만들어 진다.
+       * 함수가 완전히 실행 되면 실행 문맥은 파괴
+       * 실행문맥도 식별자 해석(identifier resolution)에 쓸 자기 만의 스코프 체인을 생성하는데 
+       * 실행 중인 함수의 스코프 속성에 있는 객체로 초기화 된다.(함수에 나타나는 순서대로 복사됨)
+       * 이 과정이 끝나면 활성화 객체(Activation Object)라고 부르는 새로운 객체가 실행 문맥에 생성 된다.
+       * 활성화 객체는 스코프 체인의 앞에 자리 잡으며 이 생핼에 대해 변수 객체 구실을 한다.
+       * 모든 지역 변수, 명명된 매개변수, agguments 집합, this 항목을 포함.
+       * 실행 문맥이 파괴 되면 활성화 객체도 파괴됨.
+       */
+      var total = add(5, 10);
+      ```
+    - 함수를 실행하는 도중 변수가 등장하면 이 변수와 같은 이름의 식별자를 찾기 위해 실행 문맥의 스코프 체인을 검색하는데 
+    이 검색 과정이 성능을 떨어트린다.
+    - 참고 이미지
+      ![Image of Yaktocat](http://figures.oreilly.com/tagoreillycom20090601oreillybooks300541I_book_d1e1/figs/I_mediaobject7_d1e6895-web.png)
+    - 식별자 해석 성능은 함수 안에 있는 지역 변수에 가장 빠르게 접근하고 전역 변수에 접근 하는 것이 일반적으로 가장 느리다.
+    - 따라서 함수 바깥쪽의 값을 한번 이상 사용한다면 항상 지역 변수에 저장하여 사용 하는 것이 좋다.
+      ```javascript
+        // 잘못된 예
+        function initUI() {
+          var bd = document.body,
+              links = document.getElecmentsByTagName("a"),
+              i = 0,
+              len = links.length;
+              
+              // code ...
+        }
+        
+        // 좋은 예 - 전역 변수에 한번만 접근
+        function initUI() {
+          var doc = document,
+              bd = doc.body,
+              links = doc.getElecmentsByTagName("a"),
+              i = 0,
+              len = links.length;
+              
+              // code ...
+        }
+      ```
+    - 동적 스코프(with, try-catch 문의 catch 절, eval()이 포함된 함수)는 꼭 필요할 때만 쓰기를 권장.
